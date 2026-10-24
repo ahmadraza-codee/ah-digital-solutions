@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ah-digital-solutions.netlify.app/sitemap.xml
