@@ -22,7 +22,7 @@ export async function POST(req) {
     if (!body || typeof body !== "object") {
       return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
     }
-    const { name, email, service, budget, timeline, message, website } = body;
+    const { name, email, service, budget, timeline, message, website, website_url, reference_sites } = body;
 
     // Honeypot field: real users never fill it; bots usually do.
     if (website) {
@@ -30,6 +30,29 @@ export async function POST(req) {
     }
 
     const errors = [];
+
+    // Optional fields (added with the quote-form update). website_url is kept
+    // separate from the honeypot field named "website".
+    let cleanWebsiteUrl = "";
+    if (website_url !== undefined && website_url !== null && String(website_url).trim() !== "") {
+      const raw = String(website_url).trim();
+      if (raw.length > 500) errors.push("Website URL must be under 500 characters.");
+      else {
+        try {
+          const parsed = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+          if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("bad protocol");
+          cleanWebsiteUrl = parsed.toString();
+        } catch {
+          errors.push("Website URL does not look like a valid web address.");
+        }
+      }
+    }
+    let cleanReferenceSites = "";
+    if (reference_sites !== undefined && reference_sites !== null && String(reference_sites).trim() !== "") {
+      cleanReferenceSites = String(reference_sites).trim();
+      if (cleanReferenceSites.length > 1000) errors.push("Reference websites must be under 1000 characters.");
+    }
+
     if (!name || typeof name !== "string" || name.trim().length < 2 || name.trim().length > 100) {
       errors.push("Name must be 2–100 characters.");
     }
@@ -54,8 +77,8 @@ export async function POST(req) {
     }
 
     await query(
-      "INSERT INTO quotes (name, email, service, budget, timeline, message) VALUES ($1, $2, $3, $4, $5, $6)",
-      [name.trim(), email.trim(), service, budget, timeline, message.trim()]
+      "INSERT INTO quotes (name, email, service, budget, timeline, message, website_url, reference_sites) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [name.trim(), email.trim(), service, budget, timeline, message.trim(), cleanWebsiteUrl || null, cleanReferenceSites || null]
     );
 
     // Email alert is fail-soft: a Resend failure must never lose the inquiry,
@@ -75,6 +98,8 @@ export async function POST(req) {
             `Service: ${service}`,
             `Budget: ${budget}`,
             `Timeline: ${timeline}`,
+            `Website URL: ${cleanWebsiteUrl || "-"}`,
+            `Reference websites: ${cleanReferenceSites || "-"}`,
             "",
             "Project details:",
             message.trim(),

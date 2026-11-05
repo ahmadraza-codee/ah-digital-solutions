@@ -61,7 +61,7 @@ export async function POST(req) {
 
     // Public pages read the merged content; revalidate them so the new
     // values go live without a redeploy.
-    for (const p of ["/", "/services", "/portfolio", "/insights", "/admin"]) {
+    for (const p of ["/", "/services", "/portfolio", "/blog", "/admin"]) {
       revalidatePath(p);
     }
     return NextResponse.json({ ok: true });

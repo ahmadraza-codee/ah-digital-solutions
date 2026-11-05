@@ -15,12 +15,19 @@ export default async function PortfolioPage() {
       <Section>
         <div className="grid gap-4 md:grid-cols-3">
           {projects.map((p) => (
-            <div key={p.slug} className="card">
-              <h3 className="text-xl font-bold text-navy">{p.name}</h3>
-              <p className="font-bold text-teal-700">{p.category}</p>
-              <p className="mt-1 text-slate-600">{p.description}</p>
-              <p><span className="tag">{p.status}</span></p>
-              <p className="mt-3"><Link href={`/portfolio/${p.slug}/`}>View Case Study →</Link></p>
+            <div key={p.slug} className="card overflow-hidden !p-0">
+              {p.image && (
+                <div className="overflow-hidden border-b border-slate2">
+                  <img src={p.image} alt={`${p.name} — homepage screenshot`} className="w-full" loading="lazy" />
+                </div>
+              )}
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-navy">{p.name}</h3>
+                <p className="font-bold text-teal-700">{p.category}</p>
+                <p className="mt-1 text-slate-600">{p.description}</p>
+                <p><span className="tag">{p.status}</span></p>
+                <p className="mt-3"><Link href={`/portfolio/${p.slug}/`}>View Case Study →</Link></p>
+              </div>
             </div>
           ))}
         </div>

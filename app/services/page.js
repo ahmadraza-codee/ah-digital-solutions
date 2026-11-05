@@ -19,11 +19,11 @@ export default async function ServicesPage() {
               <h3 className="text-xl font-bold text-navy">{s.name}</h3>
               <p className="mt-1 text-slate-600">{s.short}</p>
               <p className="mt-3 font-bold text-navy">From {s.price}</p>
-              <p className="mt-2"><Link href={`/${s.slug}/`}>Explore →</Link></p>
+              <p className="mt-2"><Link href={`/services/${s.slug}/`}>Explore →</Link></p>
             </div>
           ))}
         </div>
-        <p className="mt-8"><Link className="btn no-underline" href="/get-a-quote/">Get a Free Quote ↗</Link></p>
+        <p className="mt-8"><Link className="btn no-underline" href="/get-a-free-quote/">Get a Free Quote ↗</Link></p>
       </Section>
     </>
   );

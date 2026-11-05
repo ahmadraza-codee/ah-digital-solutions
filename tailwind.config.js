@@ -4,14 +4,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: "#14243A",
+        navy: "#0B1220",
         brand: "#2563EB",
         soft: "#F8FAFC",
         slate2: "#E2E8F0",
         muted: "#64748B",
       },
       fontFamily: {
-        sans: ["Inter", "Geist", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
+        sans: ["var(--font-inter)", "Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
       },
     },
   },

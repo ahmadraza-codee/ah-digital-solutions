@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Hero, Section } from "@/components/ui";
+import { Hero, Section, Breadcrumbs } from "@/components/ui";
 import { getContent, getProject } from "@/lib/content-server";
 
 export async function generateStaticParams() {
@@ -19,6 +19,7 @@ export default async function CaseStudyPage({ params }) {
   if (!p) notFound();
   return (
     <>
+      <Breadcrumbs items={[{ name: "Portfolio", href: "/portfolio/" }, { name: p.name, href: `/portfolio/${p.slug}/` }]} />
       <Hero kicker={p.category.toUpperCase()} title={p.name} text={p.description} />
       <Section>
         <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-yellow-900">
@@ -50,7 +51,7 @@ export default async function CaseStudyPage({ params }) {
         )}
         <h2 className="mt-8 text-3xl font-bold text-navy">Results</h2>
         <p className="mt-3">No public traffic, sales or ranking figures are published for this project, because no verified measurements are available. Any future results will only be added with real data.</p>
-        <p className="mt-6"><Link className="btn no-underline" href="/get-a-quote/">Discuss a Similar Project ↗</Link></p>
+        <p className="mt-6"><Link className="btn no-underline" href="/get-a-free-quote/">Discuss a Similar Project ↗</Link></p>
       </Section>
     </>
   );

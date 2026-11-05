@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { site, services as defaultServices, projects as defaultProjects, articles as defaultArticles } from "@/lib/content";
 
-const TABS = ["Overview", "Services & Pricing", "Portfolio", "Insights", "Inquiries", "Settings"];
+const TABS = ["Overview", "Services & Pricing", "Portfolio", "Blog", "Inquiries", "Settings"];
 const SEO_CHECKLIST = [
   "Unique page titles and meta descriptions — set per page in this Next.js app (see each page's metadata).",
   "One clear H1 per page — the Hero title on each page.",
@@ -245,7 +245,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {tab === "Insights" && (
+      {tab === "Blog" && (
         <div className="mt-6 space-y-4">
           {arts.map((a) => (
             <div key={a.slug} className="card"><strong className="text-navy">{a.title}</strong><p className="text-muted">{a.summary}</p></div>
@@ -263,13 +263,13 @@ export default function AdminPage() {
               saveContent("articles", next, "Article added and public pages revalidated.");
             }}>Add draft</button></p>
           </div>
-          <button className="btn" onClick={() => saveContent("articles", arts, "Insights saved and public pages revalidated.")}>Save insights</button>
+          <button className="btn" onClick={() => saveContent("articles", arts, "Blog saved and public pages revalidated.")}>Save blog</button>
         </div>
       )}
 
       {tab === "Inquiries" && (
         <div className="mt-6 space-y-4">
-          {inquiries.length === 0 && <p className="text-muted">No inquiries yet. Submit the quote form on /contact/ or /get-a-quote/ to create one.</p>}
+          {inquiries.length === 0 && <p className="text-muted">No inquiries yet. Submit the quote form on /contact/ or /get-a-free-quote/ to create one.</p>}
           {inquiries.map((q) => (
             <div key={q.id} className="card">
               <div className="flex flex-wrap justify-between gap-3">
