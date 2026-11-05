@@ -1,14 +1,15 @@
 import { Suspense } from "react";
 import QuoteFormWithSearch from "./QuoteFormWithSearch";
 import { Hero, Section } from "@/components/ui";
-import { site } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "Contact AH Digital Solutions",
   description: "Contact AH Digital Solutions for a project inquiry, website quote, Shopify help or SEO audit.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { site } = await getContent();
   return (
     <>
       <Hero kicker="Contact" title="Tell Us About Your Project" text="Share your goals, budget range and timeline. We will review your requirements and recommend a suitable next step." showWork={false} />

@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { Hero, Section, Faqs } from "@/components/ui";
-import { services, projects, homeFaqs, processSteps } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "AH Digital Solutions — Smart Digital Solutions for Growing Businesses",
   description: "AH Digital Solutions builds professional business websites, Shopify stores and SEO-ready digital experiences for small and growing businesses, with full-stack, AI and Flutter development available.",
 };
 
-const primary = services.slice(0, 3);
-const specialized = services.slice(3);
-
-export default function Home() {
+export default async function Home() {
+  const { services, projects, homeFaqs, processSteps } = await getContent();
+  const primary = services.slice(0, 3);
+  const specialized = services.slice(3);
   return (
     <>
       <Hero kicker="Web Development · Shopify · SEO" title="Build a Stronger Online Presence for Your Business" text="We create professional business websites, custom Shopify stores, and SEO-ready digital experiences designed around your business goals." />

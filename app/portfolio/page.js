@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Hero, Section } from "@/components/ui";
-import { projects } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "Portfolio | AH Digital Solutions",
-  description: "Selected projects from AH Digital Solutions: BT Clothes, Civil Engineering Services Website and BestLivingPicks — self-initiated projects described accurately.",
+  description: "Selected projects from AH Digital Solutions: BT Clothes, Civil Engineering Services Website, BestLivingPicks, Precon Detailing, ToolKit and Team Task Manager — self-initiated projects described accurately.",
 };
 
-export default function PortfolioPage() {
+export default async function PortfolioPage() {
+  const { projects } = await getContent();
   return (
     <>
       <Hero kicker="Portfolio" title="Selected Projects & Digital Experiences" text="Work that demonstrates our approach to website development, eCommerce, and content-focused digital experiences." />

@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Hero, Section } from "@/components/ui";
-import { articles } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "Insights | AH Digital Solutions",
   description: "Practical articles on business websites, Shopify setup and technical SEO, written to support AH Digital Solutions services.",
 };
 
-export default function InsightsPage() {
+export default async function InsightsPage() {
+  const { articles } = await getContent();
   return (
     <>
       <Hero kicker="Insights" title="Practical Guides for Growing Businesses" text="Short, honest guides on websites, Shopify and SEO — written to help you make better decisions, not to fill the blog with generic articles." />

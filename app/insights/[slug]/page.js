@@ -1,20 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Hero, Section } from "@/components/ui";
-import { articles, getArticle } from "@/lib/content";
+import { getContent, getArticle } from "@/lib/content-server";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { articles } = await getContent();
   return articles.map((a) => ({ slug: a.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const a = getArticle(params.slug);
+export async function generateMetadata({ params }) {
+  const a = await getArticle(params.slug);
   if (!a) return {};
   return { title: `${a.title} | AH Digital Solutions`, description: a.summary };
 }
 
-export default function ArticlePage({ params }) {
-  const a = getArticle(params.slug);
+export default async function ArticlePage({ params }) {
+  const a = await getArticle(params.slug);
   if (!a) notFound();
   return (
     <>

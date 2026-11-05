@@ -7,7 +7,8 @@ export default function QuoteForm({ defaultService = "" }) {
     name: "", email: "", service: defaultService || services[0].name,
     budget: "Not sure yet", timeline: "Flexible", message: "",
   });
-  const [saved, setSaved] = useState(false);
+  const [state, setState] = useState("idle"); // idle | sending | sent | error
+  const [error, setError] = useState("");
 
   const update = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -16,15 +17,38 @@ export default function QuoteForm({ defaultService = "" }) {
     return `mailto:${site.email}?subject=${encodeURIComponent("Project inquiry: " + form.service)}&body=${encodeURIComponent(body)}`;
   };
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+    setState("sending");
+    setError("");
     try {
-      const existing = JSON.parse(localStorage.getItem("ah_inquiries") || "[]");
-      existing.unshift({ ...form, createdAt: new Date().toISOString() });
-      localStorage.setItem("ah_inquiries", JSON.stringify(existing));
-    } catch {}
-    setSaved(true);
+      const res = await fetch("/api/quote/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Honeypot value is read from the form itself, not from state.
+        body: JSON.stringify({ ...form, website: new FormData(e.target).get("website") || "" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setState("sent");
+      } else {
+        setError(data.error || "Could not send your inquiry. Please try email instead.");
+        setState("error");
+      }
+    } catch {
+      setError("Could not reach the server. Please try email instead.");
+      setState("error");
+    }
   };
+
+  if (state === "sent") {
+    return (
+      <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">
+        <strong>Thank you — your inquiry was received.</strong>
+        <p className="mt-1">We will review your requirements and reply by email to <strong>{form.email}</strong>. If you do not hear back within a few working days, please email us directly at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={submit}>
@@ -47,14 +71,19 @@ export default function QuoteForm({ defaultService = "" }) {
       </select>
       <label htmlFor="message">Tell us about your project</label>
       <textarea id="message" name="message" rows={5} required value={form.message} onChange={update} placeholder="What are you building, who is it for, and what should it do?" />
-      <p className="mt-5"><button className="btn" type="submit">Save Inquiry</button></p>
-      {saved && (
-        <div className="mt-4 rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">
-          <strong>Saved in this browser.</strong> Your inquiry has been saved locally (localStorage, key <code>ah_inquiries</code>) and can be reviewed in the <a href="/admin/">admin panel</a>. It has <strong>not</strong> been sent to a server or database. To actually send it, use the email link below.
+      {/* Honeypot: hidden from real users, filled by spam bots. */}
+      <div aria-hidden="true" style={{ display: "none" }}>
+        <label htmlFor="website">Leave this field empty</label>
+        <input id="website" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+      </div>
+      <p className="mt-5"><button className="btn" type="submit" disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send Inquiry"}</button></p>
+      {state === "error" && (
+        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900">
+          <strong>Could not send the form.</strong> {error}
           <p className="mt-2"><a className="btn no-underline" href={mailto()}>Send via email to {site.email}</a></p>
         </div>
       )}
-      <p className="mt-4 text-sm text-muted">This form does not submit to a server. It saves locally in your browser and offers a pre-filled email to {site.email}. No payment is requested through this form.</p>
+      <p className="mt-4 text-sm text-muted">Submitting sends your inquiry to AH Digital Solutions. We reply by email — no payment is requested through this form.</p>
     </form>
   );
 }

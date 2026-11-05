@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Hero, Section } from "@/components/ui";
-import { services } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "Our Services | AH Digital Solutions",
   description: "Business website development, Shopify eCommerce, SEO, full-stack development, AI web applications and Flutter apps — with starting prices and free quotes.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const { services } = await getContent();
   return (
     <>
       <Hero kicker="Services" title="Digital Services for Growing Businesses" text="Six services, one clear focus: a professional website, a store that sells, and search foundations that help customers find you." />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "./globals.css";
-import { site, services } from "@/lib/content";
+import { site } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
 export const metadata = {
   title: "AH Digital Solutions — Smart Digital Solutions for Growing Businesses",
@@ -8,7 +9,8 @@ export const metadata = {
   metadataBase: new URL(site.baseUrl),
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const { site, services } = await getContent();
   return (
     <html lang="en">
       <body>

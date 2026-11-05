@@ -1,22 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Hero, Section, Faqs } from "@/components/ui";
-import { services, getService, getProject } from "@/lib/content";
+import { getContent, getService, getProject } from "@/lib/content-server";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { services } = await getContent();
   return services.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const s = getService(params.slug);
+export async function generateMetadata({ params }) {
+  const s = await getService(params.slug);
   if (!s) return {};
   return { title: `${s.title} | AH Digital Solutions`, description: s.hero };
 }
 
-export default function ServicePage({ params }) {
-  const s = getService(params.slug);
+export default async function ServicePage({ params }) {
+  const s = await getService(params.slug);
   if (!s) notFound();
-  const related = getProject(s.portfolioSlug);
+  const related = await getProject(s.portfolioSlug);
   return (
     <>
       <Hero kicker="AH Digital Solutions" title={s.title} text={s.hero} />
@@ -40,6 +41,20 @@ export default function ServicePage({ params }) {
       <Section>
         <h2 className="text-3xl font-bold text-navy">Pricing</h2>
         <p className="mt-3 text-3xl font-black text-navy">{s.price} <span className="text-base font-normal text-muted">starting price</span></p>
+        {s.tiers && (
+          <div className="mt-7 grid gap-4 md:grid-cols-3">
+            {s.tiers.map((t) => (
+              <div key={t.name} className="card">
+                <h3 className="text-xl font-bold text-navy">{t.name}</h3>
+                <p className="mt-1 text-3xl font-black text-navy">{t.price}</p>
+                <p className="mt-1 text-slate-600">{t.note}</p>
+                <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-600">
+                  {t.included.map((x) => <li key={x}>{x}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
         <p className="mt-2">Final scope, timeline and payment milestones are agreed after discovery, in writing.</p>
         <p className="text-muted">Third-party costs (hosting, Shopify plans, paid apps/themes, AI API usage, store fees) are separate unless explicitly included in your quote.</p>
       </Section>
