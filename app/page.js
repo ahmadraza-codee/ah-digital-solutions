@@ -45,8 +45,10 @@ export default async function Home() {
       />
 
       {/* 2. Hero */}
-      <section className="bg-navy text-white py-16">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2">
+      <section className="relative overflow-hidden text-white py-16">
+        <img src="/hero-bg.jpg" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/80 to-navy/60" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2">
           <div>
             <p className="text-sm font-extrabold uppercase tracking-widest text-blue-300">Professional Web Development &amp; Digital Growth Agency</p>
             <h1 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">We Build Digital Experiences That Help Businesses Grow.</h1>
