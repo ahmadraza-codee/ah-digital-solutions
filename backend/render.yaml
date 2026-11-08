@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: ah-digital-solutions-backend
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set these in the Render Dashboard (Environment tab) — same values as
+      # the Vercel env vars for the Next.js app. Do NOT put real values here.
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_SESSION_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        value: AH Digital Solutions <onboarding@resend.dev>
+      - key: FRONTEND_URL
+        value: https://ah-digital-solutions.vercel.app
