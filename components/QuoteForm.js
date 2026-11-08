@@ -25,7 +25,13 @@ export default function QuoteForm({ defaultService = "" }) {
     setState("sending");
     setError("");
     try {
-      const res = await fetch("/api/quote/", {
+      // When NEXT_PUBLIC_API_URL is set (Vercel env var), the quote goes to
+      // the Express backend on Render; otherwise it uses the Next.js
+      // /api/quote fallback route on the same site. Mailto is only used
+      // when the API call itself fails (see the error box below).
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+      const endpoint = apiBase ? `${apiBase}/api/quote` : "/api/quote/";
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Honeypot value is read from the form itself, not from state.
